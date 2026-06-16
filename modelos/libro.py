@@ -7,7 +7,6 @@ class Libro(metaclass=MetaEntidad):
         titulo,
         autor,
         isbn,
-        anio,
         paginas
     ):
 
