@@ -13,7 +13,6 @@ class Libro(metaclass=MetaEntidad):
         self.titulo = titulo
         self.autor = autor
         self.isbn = isbn
-        self.anio = anio
         self.paginas = paginas
 
     def mostrar_info(self):
