@@ -1,5 +1,7 @@
 # Grupo-24-PA
 
+[![Ejecutar tests con assert](https://github.com/francocinallidev11/Grupo-24-PA/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/francocinallidev11/Grupo-24-PA/actions/workflows/tests.yml)
+
 ## Trabajo Práctico Integrador Final
 
 Sistema de Gestión de Biblioteca Digital desarrollado en Python para la materia Programación Avanzada.
