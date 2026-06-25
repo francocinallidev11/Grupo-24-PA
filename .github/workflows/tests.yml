@@ -1,0 +1,42 @@
+name: Ejecutar tests con assert
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  ejecutar-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Ejecutar cada archivo .py como módulo
+        run: |
+          set -uo pipefail
+          fallo_general=0
+
+          while IFS= read -r -d '' archivo; do
+            modulo=$(echo "$archivo" | sed 's|^\./||; s|\.py$||' | tr '/' '.')
+            echo "::group::▶ Ejecutando $modulo"
+            if python -m "$modulo"; then
+              echo "✅ $modulo: OK"
+            else
+              echo "❌ $modulo: FALLÓ"
+              fallo_general=1
+            fi
+            echo "::endgroup::"
+          done < <(find . -name "*.py" \
+                      -not -path "./.git/*" \
+                      -not -path "*/venv/*" \
+                      -not -path "*/.venv/*" \
+                      -not -path "*/__pycache__/*" \
+                      -print0)
+
+          exit $fallo_general
