@@ -61,8 +61,8 @@ if __name__ == "__main__":
     from modelos.libro import Libro
 
     # DATOS PARA TESTS DE LIBROS
-    libro1 = Libro("Cien años de soledad", "García Márquez", "978-0307474728", 417)
-    libro2 = Libro("Cien años de soledad: Edicion Limitada", "García Márquez", "978-84-663-7971-7", 417)
+    libro1 = Libro("Cien años de soledad", "García Márquez", 1967 , "978-0307474728", 417)
+    libro2 = Libro("Cien años de soledad: Edicion Limitada", "García Márquez", 2017 , "978-84-663-7971-7", 417)
     biblioteca = Biblioteca()
     
     # TEST AGREGAR LIBRO
@@ -109,11 +109,9 @@ if __name__ == "__main__":
 
     # TEST LISTAR LIBROS
     esperado = [(
-        f"Cien años de soledad: Edicion Limitada - García Márquez "
+        f"Cien años de soledad: Edicion Limitada - García Márquez (2017)"
         f"(ISBN: 978-84-663-7971-7, 500 págs.)"
     )]
-    #print("Esperado:", esperado)
-    #print("Obtenido:", biblioteca.listar_libros())
 
     assert biblioteca.listar_libros() == esperado, "La lista de libros no coincide con la esperada"
     print("Test listar_libros pasó correctamente")
