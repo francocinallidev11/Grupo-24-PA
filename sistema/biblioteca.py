@@ -1,8 +1,8 @@
-from utilidades.decoradores import registrar_accion
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from utilidades.decoradores import registrar_accion
 
 class Biblioteca:
 
@@ -55,7 +55,7 @@ class Biblioteca:
         return libro
 
     # =========================================================================
-    # GESTIÓN DE USUARIOS (NUEVO CRUD)
+    # GESTIÓN DE USUARIOS
     # =========================================================================
     def listar_usuarios(self):
         return [usuario.mostrar_info() for usuario in self.usuarios]
@@ -93,10 +93,8 @@ if __name__ == "__main__":
     from modelos.libro import Libro
 
     # DATOS PARA TESTS DE LIBROS
-    libro1 = Libro("Cien años de soledad",
-                   "García Márquez", "978-0307474728", 417)
-    libro2 = Libro("Cien años de soledad: Edicion Limitada",
-                   "García Márquez", "978-84-663-7971-7", 417)
+    libro1 = Libro("Cien años de soledad", "García Márquez", "978-0307474728", 417)
+    libro2 = Libro("Cien años de soledad: Edicion Limitada", "García Márquez", "978-84-663-7971-7", 417)
     biblioteca = Biblioteca()
 
     # TEST AGREGAR LIBRO
@@ -147,8 +145,7 @@ if __name__ == "__main__":
         f"(ISBN: 978-84-663-7971-7, 500 págs.)"
     )]
 
-    assert biblioteca.listar_libros(
-    ) == esperado, "La lista de libros no coincide con la esperada"
+    assert biblioteca.listar_libros() == esperado, "La lista de libros no coincide con la esperada"
     print("Test listar_libros pasó correctamente")
 
     print("Todos los tests de Biblioteca pasaron correctamente")

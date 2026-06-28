@@ -10,7 +10,6 @@ class Usuario(Persona):
         dni,
         correo
     ):
-        # Invocamos al constructor de la clase padre (Persona)
         super().__init__(
             nombre,
             apellido,
@@ -19,7 +18,6 @@ class Usuario(Persona):
         self.correo = correo
 
     def mostrar_info(self):
-        # Comportamiento polimórfico requerido por MetaEntidad
         return (
             f"{self.nombre} "
             f"{self.apellido} "
