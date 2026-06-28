@@ -89,63 +89,102 @@ class Biblioteca:
         return usuario
 
 
+
 if __name__ == "__main__":
-    from modelos.libro import Libro
+    def test_libros():
+        from modelos.libro import Libro
 
-    # DATOS PARA TESTS DE LIBROS
-    libro1 = Libro("Cien años de soledad", "García Márquez", "978-0307474728", 417)
-    libro2 = Libro("Cien años de soledad: Edicion Limitada", "García Márquez", "978-84-663-7971-7", 417)
-    biblioteca = Biblioteca()
+        # DATOS PARA TESTS DE LIBROS
+        libro1 = Libro("Cien años de soledad", "García Márquez", "978-0307474728", 417)
+        libro2 = Libro("Cien años de soledad: Edicion Limitada", "García Márquez", "978-84-663-7971-7", 417)
+        biblioteca = Biblioteca()
 
-    # TEST AGREGAR LIBRO
-    biblioteca.agregar_libro(libro1)
-    biblioteca.agregar_libro(libro2)
-    print("Test agregar_libro pasó correctamente")
-
-    try:
+        # TEST AGREGAR LIBRO
         biblioteca.agregar_libro(libro1)
-        print("Test agregar_libro con ISBN duplicado falló")
-    except ValueError:
-        print("Test agregar_libro con ISBN duplicado pasó correctamente")
+        biblioteca.agregar_libro(libro2)
+        print("Test agregar_libro pasó correctamente")
 
-    # TEST BUSCAR POR ISBN
-    resultado = biblioteca.buscar_libro("978-0307474728")
-    assert resultado == libro1, "El libro encontrado no coincide con el esperado"
-    print("Test buscar_libro por ISBN pasó correctamente")
+        try:
+            biblioteca.agregar_libro(libro1)
+            print("Test agregar_libro con ISBN duplicado falló")
+        except ValueError:
+            print("Test agregar_libro con ISBN duplicado pasó correctamente")
 
-    resultado = biblioteca.buscar_libro("978-0307474710")
-    assert resultado is None, "Se encontró un libro que no existe"
-    print("Test buscar_libro por ISBN inexistente pasó correctamente")
+        # TEST BUSCAR POR ISBN
+        resultado = biblioteca.buscar_libro("978-0307474728")
+        assert resultado == libro1, "El libro encontrado no coincide con el esperado"
+        print("Test buscar_libro por ISBN pasó correctamente")
 
-    # TEST ELIMINAR LIBRO
-    biblioteca.eliminar_libro("978-0307474728")
-    print("Test eliminar_libro pasó correctamente")
+        resultado = biblioteca.buscar_libro("978-0307474710")
+        assert resultado is None, "Se encontró un libro que no existe"
+        print("Test buscar_libro por ISBN inexistente pasó correctamente")
 
-    try:
+        # TEST ELIMINAR LIBRO
         biblioteca.eliminar_libro("978-0307474728")
-        print("Test eliminar_libro con ISBN inexistente falló")
-    except:
-        print("Test eliminar_libro con ISBN inexistente pasó correctamente")
+        print("Test eliminar_libro pasó correctamente")
 
-    # TEST MODIFICAR LIBRO
-    biblioteca.modificar_libro("978-84-663-7971-7", paginas=500)
-    resultado = biblioteca.buscar_libro("978-84-663-7971-7")
-    assert resultado.paginas == 500, "El número de páginas no se actualizó correctamente"
-    print("Test modificar_libro pasó correctamente")
+        try:
+            biblioteca.eliminar_libro("978-0307474728")
+            print("Test eliminar_libro con ISBN inexistente falló")
+        except:
+            print("Test eliminar_libro con ISBN inexistente pasó correctamente")
 
-    try:
-        biblioteca.modificar_libro("978-0307474728", paginas=300)
-        print("Test modificar_libro con ISBN inexistente falló")
-    except:
-        print("Test modificar_libro con ISBN inexistente pasó correctamente")
+        # TEST MODIFICAR LIBRO
+        biblioteca.modificar_libro("978-84-663-7971-7", paginas=500)
+        resultado = biblioteca.buscar_libro("978-84-663-7971-7")
+        assert resultado.paginas == 500, "El número de páginas no se actualizó correctamente"
+        print("Test modificar_libro pasó correctamente")
 
-    # TEST LISTAR LIBROS
-    esperado = [(
-        f"Cien años de soledad: Edicion Limitada - García Márquez "
-        f"(ISBN: 978-84-663-7971-7, 500 págs.)"
-    )]
+        try:
+            biblioteca.modificar_libro("978-0307474728", paginas=300)
+            print("Test modificar_libro con ISBN inexistente falló")
+        except:
+            print("Test modificar_libro con ISBN inexistente pasó correctamente")
 
-    assert biblioteca.listar_libros() == esperado, "La lista de libros no coincide con la esperada"
-    print("Test listar_libros pasó correctamente")
+        # TEST LISTAR LIBROS
+        esperado = [(
+            f"Cien años de soledad: Edicion Limitada - García Márquez "
+            f"(ISBN: 978-84-663-7971-7, 500 págs.)"
+        )]
 
-    print("Todos los tests de Biblioteca pasaron correctamente")
+        assert biblioteca.listar_libros() == esperado, "La lista de libros no coincide con la esperada"
+        print("Test listar_libros pasó correctamente")
+
+        print("Todos los tests de Biblioteca pasaron correctamente")
+    
+    def test_usuarios():
+        from modelos.usuario import Usuario
+
+        # DATOS PARA TESTS DE USUARIOS
+        usuario1 = Usuario("Juan", "Pérez", "12345678A", "juan.perez@example.com")
+        biblioteca = Biblioteca()
+
+        # TEST AGREGAR USUARIO
+        biblioteca.agregar_usuario(usuario1)
+        print("Test agregar_usuario pasó correctamente")
+
+        # TEST LISTAR USUARIOS
+        esperado = [(
+            f"Juan Pérez - juan.perez@example.com"
+        )]
+        assert biblioteca.listar_usuarios() == esperado, "La lista de usuarios no coincide con la esperada"
+        print("Test listar_usuarios pasó correctamente")
+
+        # TEST BUSCAR POR DNI
+        resultado = biblioteca.buscar_usuario("12345678A")
+        assert resultado == usuario1, "El usuario encontrado no coincide con el esperado"
+        print("Test buscar_usuario por DNI pasó correctamente")
+
+        # TEST MODIFICAR USUARIO
+        biblioteca.modificar_usuario("12345678A", correo="juan.perez.updated@example.com")
+        resultado = biblioteca.buscar_usuario("12345678A")
+        assert resultado.correo == "juan.perez.updated@example.com", "El correo no se actualizó correctamente"
+        print("Test modificar_usuario pasó correctamente")
+
+        # TEST ELIMINAR USUARIO
+        biblioteca.eliminar_usuario("12345678A")
+        print("Test eliminar_usuario pasó correctamente")
+
+
+    test_libros()
+    test_usuarios()
