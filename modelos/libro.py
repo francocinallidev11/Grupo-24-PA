@@ -2,9 +2,10 @@ from utilidades.metaclases import MetaEntidad
 from utilidades.validadores import validar_isbn
 
 class Libro(metaclass=MetaEntidad):
-    def __init__(self, titulo, autor, isbn, paginas):
+    def __init__(self, titulo, autor, anio, isbn, paginas):
         self.titulo = titulo
         self.autor = autor
+        self.anio = anio
         self.isbn = isbn      # pasa por el setter -> valida
         self.paginas = paginas
 
@@ -20,6 +21,6 @@ class Libro(metaclass=MetaEntidad):
 
     def mostrar_info(self):
         return (
-            f"{self.titulo} - {self.autor} "
+            f"{self.titulo} - {self.autor} ({self.anio})"
             f"(ISBN: {self.isbn}, {self.paginas} págs.)"
         )
