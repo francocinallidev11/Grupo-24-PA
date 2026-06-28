@@ -1,30 +1,28 @@
+from utilidades.decoradores import registrar_accion
 import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from utilidades.decoradores import registrar_accion
 
 class Biblioteca:
 
     _instancia = None
 
     def __new__(cls):
-
         if cls._instancia is None:
             cls._instancia = super().__new__(cls)
-
         return cls._instancia
 
     def __init__(self):
-
         if not hasattr(self, "_inicializado"):
-
             self.libros = []
             self.usuarios = []
             self.prestamos = []
-
             self._inicializado = True
 
+    # =========================================================================
+    # GESTIÓN DE LIBROS
+    # =========================================================================
     def listar_libros(self):
         return [libro.mostrar_info() for libro in self.libros]
 
@@ -56,15 +54,51 @@ class Biblioteca:
             setattr(libro, atributo, valor)
         return libro
 
+    # =========================================================================
+    # GESTIÓN DE USUARIOS (NUEVO CRUD)
+    # =========================================================================
+    def listar_usuarios(self):
+        return [usuario.mostrar_info() for usuario in self.usuarios]
+
+    def buscar_usuario(self, dni):
+        for usuario in self.usuarios:
+            if usuario.dni == dni:
+                return usuario
+        return None
+
+    @registrar_accion
+    def agregar_usuario(self, usuario):
+        if self.buscar_usuario(usuario.dni) is not None:
+            raise ValueError(f"Ya existe un usuario con DNI {usuario.dni}")
+        self.usuarios.append(usuario)
+
+    @registrar_accion
+    def eliminar_usuario(self, dni):
+        usuario = self.buscar_usuario(dni)
+        if usuario is None:
+            raise ValueError(f"No existe un usuario con DNI {dni}")
+        self.usuarios.remove(usuario)
+
+    @registrar_accion
+    def modificar_usuario(self, dni, **cambios):
+        usuario = self.buscar_usuario(dni)
+        if usuario is None:
+            raise ValueError(f"No existe un usuario con DNI {dni}")
+        for atributo, valor in cambios.items():
+            setattr(usuario, atributo, valor)
+        return usuario
+
 
 if __name__ == "__main__":
     from modelos.libro import Libro
 
     # DATOS PARA TESTS DE LIBROS
-    libro1 = Libro("Cien años de soledad", "García Márquez", "978-0307474728", 417)
-    libro2 = Libro("Cien años de soledad: Edicion Limitada", "García Márquez", "978-84-663-7971-7", 417)
+    libro1 = Libro("Cien años de soledad",
+                   "García Márquez", "978-0307474728", 417)
+    libro2 = Libro("Cien años de soledad: Edicion Limitada",
+                   "García Márquez", "978-84-663-7971-7", 417)
     biblioteca = Biblioteca()
-    
+
     # TEST AGREGAR LIBRO
     biblioteca.agregar_libro(libro1)
     biblioteca.agregar_libro(libro2)
@@ -79,11 +113,11 @@ if __name__ == "__main__":
     # TEST BUSCAR POR ISBN
     resultado = biblioteca.buscar_libro("978-0307474728")
     assert resultado == libro1, "El libro encontrado no coincide con el esperado"
-    print ("Test buscar_libro por ISBN pasó correctamente")
+    print("Test buscar_libro por ISBN pasó correctamente")
 
     resultado = biblioteca.buscar_libro("978-0307474710")
     assert resultado is None, "Se encontró un libro que no existe"
-    print ("Test buscar_libro por ISBN inexistente pasó correctamente")
+    print("Test buscar_libro por ISBN inexistente pasó correctamente")
 
     # TEST ELIMINAR LIBRO
     biblioteca.eliminar_libro("978-0307474728")
@@ -100,7 +134,7 @@ if __name__ == "__main__":
     resultado = biblioteca.buscar_libro("978-84-663-7971-7")
     assert resultado.paginas == 500, "El número de páginas no se actualizó correctamente"
     print("Test modificar_libro pasó correctamente")
-    
+
     try:
         biblioteca.modificar_libro("978-0307474728", paginas=300)
         print("Test modificar_libro con ISBN inexistente falló")
@@ -112,11 +146,9 @@ if __name__ == "__main__":
         f"Cien años de soledad: Edicion Limitada - García Márquez "
         f"(ISBN: 978-84-663-7971-7, 500 págs.)"
     )]
-    #print("Esperado:", esperado)
-    #print("Obtenido:", biblioteca.listar_libros())
 
-    assert biblioteca.listar_libros() == esperado, "La lista de libros no coincide con la esperada"
+    assert biblioteca.listar_libros(
+    ) == esperado, "La lista de libros no coincide con la esperada"
     print("Test listar_libros pasó correctamente")
 
     print("Todos los tests de Biblioteca pasaron correctamente")
-
