@@ -143,7 +143,7 @@ if __name__ == "__main__":
 
         # TEST LISTAR LIBROS
         esperado = [(
-            f"Cien años de soledad: Edicion Limitada - García Márquez "
+            f"Cien años de soledad: Edicion Limitada - García Márquez (2017) "
             f"(ISBN: 978-84-663-7971-7, 500 págs.)"
         )]
 
