@@ -64,7 +64,7 @@ Grupo-24-PA/
 * Python 3
 * Git
 * GitHub
-* Draw.io (UML)
+* Mermaid (UML)
 
 ## Ejecución
 
@@ -88,10 +88,60 @@ python main.py
 
 ## UML
 
-El diagrama UML del sistema se encontrará en el archivo:
-
-```text
-uml.png
+```mermaid
+classDiagram
+    class Persona {
+        +str nombre
+        +str apellido
+        +str dni
+        +mostrar_info()
+    }
+    class Usuario {
+        +str correo
+        +mostrar_info()
+    }
+    class Libro {
+        +str titulo
+        +str autor
+        +int anio
+        +str isbn
+        +int paginas
+        +mostrar_info()
+    }
+    class Prestamo {
+        +date fecha_prestamo
+        +date fecha_devolucion
+        +bool activo
+        +devolver()
+        +mostrar_info()
+    }
+    class Biblioteca {
+        <<Singleton>>
+        +list libros
+        +list usuarios
+        +list prestamos
+        +buscar_libro(isbn)
+        +agregar_libro(libro)
+        +eliminar_libro(isbn)
+        +modificar_libro(isbn, cambios)
+        +listar_libros()
+        +buscar_usuario(dni)
+        +agregar_usuario(usuario)
+        +eliminar_usuario(dni)
+        +modificar_usuario(dni, cambios)
+        +listar_usuarios()
+        +buscar_prestamo_activo(isbn)
+        +registrar_prestamo(isbn, dni)
+        +registrar_devolucion(isbn)
+        +listar_prestamos_activos()
+        +listar_prestamos()
+    }
+    Persona <|-- Usuario : herencia
+    Biblioteca o-- Libro : agregacion
+    Biblioteca o-- Usuario : agregacion
+    Biblioteca o-- Prestamo : agregacion
+    Prestamo *-- Libro : composicion
+    Prestamo *-- Usuario : composicion
 ```
 
 ## Estado del Proyecto
