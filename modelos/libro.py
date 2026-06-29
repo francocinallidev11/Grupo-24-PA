@@ -21,6 +21,6 @@ class Libro(metaclass=MetaEntidad):
 
     def mostrar_info(self):
         return (
-            f"{self.titulo} - {self.autor} ({self.anio})"
+            f"{self.titulo} - {self.autor} ({self.anio}) "
             f"(ISBN: {self.isbn}, {self.paginas} págs.)"
         )
