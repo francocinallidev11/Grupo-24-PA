@@ -96,4 +96,4 @@ uml/
 
 ## Estado del Proyecto
 
-En desarrollo.
+Finalizado.
