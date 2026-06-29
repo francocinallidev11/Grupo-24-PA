@@ -28,5 +28,5 @@ class Prestamo:
         return (
             f"{self.libro.titulo} "
             f"prestado a "
-            f"{self.usuario.nombre}"
+            f"{self.usuario.nombre} {self.usuario.apellido}"
         )
