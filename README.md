@@ -88,10 +88,10 @@ python main.py
 
 ## UML
 
-El diagrama UML del sistema se encontrará en la carpeta:
+El diagrama UML del sistema se encontrará en el archivo:
 
 ```text
-uml/
+uml.png
 ```
 
 ## Estado del Proyecto
