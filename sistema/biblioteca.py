@@ -3,6 +3,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from utilidades.decoradores import registrar_accion
+from modelos.prestamo import Prestamo
 
 class Biblioteca:
 
@@ -87,8 +88,46 @@ class Biblioteca:
         for atributo, valor in cambios.items():
             setattr(usuario, atributo, valor)
         return usuario
+    
+    # =========================================================================
+    # GESTIÓN DE PRÉSTAMOS
+    # =========================================================================
+    def buscar_prestamo_activo(self, isbn):
+        for prestamo in self.prestamos:
+            if prestamo.libro.isbn == isbn and prestamo.activo:
+                return prestamo
+        return None
 
+    @registrar_accion
+    def registrar_prestamo(self, isbn, dni):
+        libro = self.buscar_libro(isbn)
+        if libro is None:
+            raise ValueError(f"No existe un libro con ISBN {isbn}")
 
+        usuario = self.buscar_usuario(dni)
+        if usuario is None:
+            raise ValueError(f"No existe un usuario con DNI {dni}")
+
+        if self.buscar_prestamo_activo(isbn) is not None:
+            raise ValueError(f"El libro con ISBN {isbn} ya está prestado")
+
+        prestamo = Prestamo(libro, usuario)
+        self.prestamos.append(prestamo)
+        return prestamo
+
+    @registrar_accion
+    def registrar_devolucion(self, isbn):
+        prestamo = self.buscar_prestamo_activo(isbn)
+        if prestamo is None:
+            raise ValueError(f"No hay un préstamo activo para el libro con ISBN {isbn}")
+        prestamo.devolver()
+        return prestamo
+
+    def listar_prestamos_activos(self):
+        return [p.mostrar_info() for p in self.prestamos if p.activo]
+
+    def listar_prestamos(self):
+        return [p.mostrar_info() for p in self.prestamos]
 
 if __name__ == "__main__":
     def test_libros():
@@ -143,8 +182,7 @@ if __name__ == "__main__":
 
         # TEST LISTAR LIBROS
         esperado = [(
-            f"Cien años de soledad: Edicion Limitada - García Márquez (2017) "
-            f"(ISBN: 978-84-663-7971-7, 500 págs.)"
+            "Cien años de soledad: Edicion Limitada - García Márquez (2017) (ISBN: 978-84-663-7971-7, 500 págs.)"
         )]
 
         assert biblioteca.listar_libros() == esperado, "La lista de libros no coincide con la esperada"
@@ -165,7 +203,7 @@ if __name__ == "__main__":
 
         # TEST LISTAR USUARIOS
         esperado = [(
-            f"Juan Pérez - juan.perez@example.com"
+            "Juan Pérez - juan.perez@example.com"
         )]
         assert biblioteca.listar_usuarios() == esperado, "La lista de usuarios no coincide con la esperada"
         print("Test listar_usuarios pasó correctamente")
@@ -185,6 +223,63 @@ if __name__ == "__main__":
         biblioteca.eliminar_usuario("12345678A")
         print("Test eliminar_usuario pasó correctamente")
 
+        print("Todos los tests de Usuarios pasaron correctamente")
+
+    def test_prestamos():
+        from modelos.usuario import Usuario
+
+        # DATOS PARA TESTS DE PRESTAMOS
+        biblioteca = Biblioteca()
+        usuario1 = Usuario("Ana", "Pérez", "30111222", "ana@mail.com")
+        biblioteca.agregar_usuario(usuario1)
+        libro1 = biblioteca.buscar_libro("978-84-663-7971-7")  # el que sobrevive a test_libros()
+
+        # TEST REGISTRAR PRESTAMO
+        biblioteca.registrar_prestamo(libro1.isbn, usuario1.dni)
+        print("Test registrar_prestamo pasó correctamente")
+
+        try:
+            biblioteca.registrar_prestamo(libro1.isbn, usuario1.dni)
+            print("Test registrar_prestamo con préstamo activo falló")
+        except ValueError:
+            print("Test registrar_prestamo con préstamo activo pasó correctamente")
+
+        try:
+            biblioteca.registrar_prestamo("978-0000000000", usuario1.dni)
+            print("Test registrar_prestamo con libro inexistente falló")
+        except ValueError:
+            print("Test registrar_prestamo con libro inexistente pasó correctamente")
+
+        try:
+            biblioteca.registrar_prestamo(libro1.isbn, "00000000")
+            print("Test registrar_prestamo con usuario inexistente falló")
+        except ValueError:
+            print("Test registrar_prestamo con usuario inexistente pasó correctamente")
+
+        # TEST LISTAR PRESTAMOS ACTIVOS
+        esperado = [(
+            "Cien años de soledad: Edicion Limitada prestado a Ana Pérez"
+        )]
+
+        assert biblioteca.listar_prestamos_activos() == esperado, "La lista de préstamos activos no coincide con la esperada"
+        print("Test listar_prestamos_activos pasó correctamente")
+
+        # TEST REGISTRAR DEVOLUCION
+        biblioteca.registrar_devolucion(libro1.isbn)
+        print("Test registrar_devolucion pasó correctamente")
+
+        try:
+            biblioteca.registrar_devolucion(libro1.isbn)
+            print("Test registrar_devolucion sin préstamo activo falló")
+        except ValueError:
+            print("Test registrar_devolucion sin préstamo activo pasó correctamente")
+
+        assert biblioteca.listar_prestamos_activos() == [], "No debería haber préstamos activos luego de la devolución"
+        print("Test listar_prestamos_activos vacío pasó correctamente")
+
+        print("Todos los tests de Prestamos pasaron correctamente")
+
 
     test_libros()
     test_usuarios()
+    test_prestamos()
